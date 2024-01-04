@@ -30,7 +30,7 @@
 #include <math.h>
 
 // VARIANT ALTERATIONS
-#if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV)
+#if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV) && !defined(XMRIG_POWER)
 #   define VARIANT1_INIT(part) \
     uint64_t tweak1_2_##part = 0; \
     if (BASE == Algorithm::CN_1) { \
@@ -60,7 +60,7 @@
     }
 
 
-#if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV)
+#if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV) && !defined(XMRIG_POWER)
 #   define VARIANT2_INIT(part) \
     __m128i division_result_xmm_##part = _mm_cvtsi64_si128(static_cast<int64_t>(h##part[12])); \
     __m128i sqrt_result_xmm_##part     = _mm_cvtsi64_si128(static_cast<int64_t>(h##part[13]));
@@ -115,7 +115,7 @@
         _mm_store_si128((__m128i *)((base_ptr) + ((offset) ^ 0x30)), _mm_add_epi64(chunk2, _a)); \
     } while (0)
 
-#else
+#elif defined(XMRIG_ARM)
 #   define VARIANT2_INIT(part) \
     uint64_t division_result_##part = h##part[12]; \
     uint64_t sqrt_result_##part = h##part[13];
@@ -163,6 +163,22 @@
             vst1q_u64((uint64_t*)((base_ptr) + ((offset) ^ 0x20)), vaddq_u64(chunk1, vreinterpretq_u64_u8(_b))); \
         } \
         vst1q_u64((uint64_t*)((base_ptr) + ((offset) ^ 0x30)), vaddq_u64(chunk2, vreinterpretq_u64_u8(_a))); \
+    } while (0)
+#elif defined(XMRIG_POWER)
+#   define VARIANT2_INIT(part) \
+    uint64_t division_result_##part = h##part[12]; \
+    uint64_t sqrt_result_##part = h##part[13];
+
+#   define VARIANT2_INTEGER_MATH(part, cl, cx) \
+    do { \
+    } while (0)
+
+#   define VARIANT2_SHUFFLE(base_ptr, offset, _a, _b, _b1, _c, reverse) \
+    do { \
+    } while (0)
+
+#   define VARIANT2_SHUFFLE2(base_ptr, offset, _a, _b, _b1, hi, lo, reverse) \
+    do { \
     } while (0)
 #endif
 

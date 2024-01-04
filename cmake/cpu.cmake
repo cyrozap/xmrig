@@ -190,6 +190,50 @@ if (ARM_TARGET AND ARM_TARGET GREATER 6)
     endif()
 endif()
 
+if (NOT POWER_TARGET)
+    if (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64(le)?$")
+        set(POWER_TARGET ON)
+    endif()
+endif()
+
+if (POWER_TARGET)
+    set(XMRIG_POWER ON)
+    add_definitions(-DXMRIG_POWER)
+
+    set(WITH_CN_LITE OFF)
+    set(WITH_CN_HEAVY OFF)
+    set(WITH_CN_PICO OFF)
+    set(WITH_CN_FEMTO OFF)
+    set(WITH_ARGON2 OFF)
+    set(WITH_KAWPOW OFF)
+    set(WITH_GHOSTRIDER OFF)
+    add_definitions(-DNO_WARN_X86_INTRINSICS)
+
+    message(STATUS "Use POWER_TARGET=${POWER_TARGET} (${CMAKE_SYSTEM_PROCESSOR})")
+
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/check_power_crypto.cpp "
+        #include <altivec.h>
+        int main() {
+            __vector unsigned long long a = {0, 0}, b = {0, 0};
+            __vector unsigned long long c = __builtin_crypto_vcipher(a, b);
+            return 0;
+        }
+    ")
+
+    try_run(POWER_CRYPTO_RUN_FAIL POWER_CRYPTO_COMPILE_OK
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/check_power_crypto.cpp
+        COMPILE_DEFINITIONS "-mcrypto"
+    )
+
+    if (POWER_CRYPTO_COMPILE_OK AND NOT POWER_CRYPTO_RUN_FAIL)
+        add_definitions(-DXMRIG_POWER_CRYPTO)
+        set(POWER_CXX_FLAGS "-mcrypto")
+    else()
+        set(POWER_CXX_FLAGS "-mcpu=power7")
+    endif()
+endif()
+
 if (WITH_SSE4_1)
     add_definitions(-DXMRIG_FEATURE_SSE4_1)
 endif()

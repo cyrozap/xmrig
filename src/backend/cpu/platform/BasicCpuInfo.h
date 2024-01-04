@@ -53,6 +53,7 @@ protected:
     inline bool hasXOP() const override                         { return has(FLAG_XOP); }
     inline bool isVM() const override                           { return has(FLAG_VM); }
     inline bool hasRISCV_Vector() const override                { return has(FLAG_RISCV_VECTOR); }
+    inline bool hasPowerV3P0() const override                   { return has(FLAG_POWER_V3P0); }
     inline bool jccErratum() const override                     { return m_jccErratum; }
     inline const char *brand() const override                   { return m_brand; }
     inline const std::vector<int32_t> &units() const override   { return m_units; }
@@ -66,7 +67,7 @@ protected:
     inline Vendor vendor() const override                       { return m_vendor; }
     inline uint32_t model() const override
     {
-#   if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV)
+#   if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV) && !defined(XMRIG_POWER)
         return m_model;
 #   else
         return 0;
@@ -81,7 +82,7 @@ protected:
     Vendor m_vendor         = VENDOR_UNKNOWN;
 
 private:
-#   if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV)
+#   if !defined(XMRIG_ARM) && !defined(XMRIG_RISCV) && !defined(XMRIG_POWER)
     uint32_t m_procInfo     = 0;
     uint32_t m_family       = 0;
     uint32_t m_model        = 0;

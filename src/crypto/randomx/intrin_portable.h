@@ -213,7 +213,7 @@ inline void* rx_aligned_alloc(size_t size, size_t align) {
 #endif
 
 #define rx_aligned_free(a) free(a)
-#define rx_prefetch_nta(x)
+#define rx_prefetch_nta(x) __builtin_prefetch((const void *)(x), 0, 0)
 #define rx_prefetch_t0(x)
 
 /* Splat 64-bit long long to 2 64-bit long longs */

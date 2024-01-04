@@ -56,6 +56,12 @@ char *xmrig::Platform::createUserAgent()
     length += snprintf(buf + length, max - length, "aarch64) libuv/%s", uv_version_string());
 #   elif defined(__arm__)
     length += snprintf(buf + length, max - length, "arm) libuv/%s", uv_version_string());
+#   elif defined(__ppc64__) || defined(__PPC64__) || defined(__ppc64le__) || defined(__PPC64LE__)
+#       if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    length += snprintf(buf + length, max - length, "ppc64) libuv/%s", uv_version_string());
+#       else
+    length += snprintf(buf + length, max - length, "ppc64le) libuv/%s", uv_version_string());
+#       endif
 #   else
     length += snprintf(buf + length, max - length, "i686) libuv/%s", uv_version_string());
 #   endif

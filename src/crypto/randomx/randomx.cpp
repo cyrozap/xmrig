@@ -41,6 +41,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "crypto/randomx/jit_compiler_a64_static.hpp"
 #elif defined(__riscv) && defined(__riscv_xlen) && (__riscv_xlen == 64)
 #include "crypto/randomx/jit_compiler_rv64_static.hpp"
+#elif defined(__ppc64__) || defined(__PPC64__) || defined(__ppc64le__) || defined(__PPC64LE__)
+#include "crypto/randomx/jit_compiler_ppc64_static.hpp"
 #endif
 
 #include "backend/cpu/Cpu.h"
@@ -300,6 +302,13 @@ typedef void(randomx::JitCompilerX86::* InstructionGeneratorX86_2)(const randomx
 #define JIT_HANDLE(x, prev) do { \
 		randomx::JitCompilerRV64::engine[k] = &randomx::JitCompilerRV64::v1_##x; \
 		randomx::JitCompilerRV64::inst_map[k] = static_cast<uint8_t>(randomx::InstructionType::x); \
+	} while (0)
+
+#elif defined(XMRIG_POWER)
+
+#define JIT_HANDLE(x, prev) do { \
+		randomx::JitCompilerPPC64::engine[k] = &randomx::JitCompilerPPC64::v1_##x; \
+		randomx::JitCompilerPPC64::inst_map[k] = static_cast<uint8_t>(randomx::InstructionType::x); \
 	} while (0)
 
 #else

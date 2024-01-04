@@ -64,6 +64,12 @@ elseif (XMRIG_ARM)
             src/backend/cpu/platform/BasicCpuInfo_arm_unix.cpp
         )
     endif()
+elseif (XMRIG_POWER)
+    list(APPEND SOURCES_BACKEND_CPU src/backend/cpu/platform/BasicCpuInfo_power.cpp)
+
+    if (XMRIG_OS_UNIX)
+        list(APPEND SOURCES_BACKEND_CPU src/backend/cpu/platform/lscpu_power.cpp)
+    endif()
 else()
     list(APPEND SOURCES_BACKEND_CPU src/backend/cpu/platform/BasicCpuInfo.cpp)
 endif()

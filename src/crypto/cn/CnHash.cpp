@@ -25,6 +25,8 @@
 
 #if defined(XMRIG_ARM) || defined(XMRIG_RISCV)
 #   include "crypto/cn/CryptoNight_arm.h"
+#elif defined(XMRIG_POWER)
+#   include "crypto/cn/CryptoNight_power.h"
 #else
 #   include "crypto/cn/CryptoNight_x86.h"
 #endif
